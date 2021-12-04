@@ -2,8 +2,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import Weather from './android/screens/Weather'
-import HomeScreen from './android/screens/HomeScreen'
+import Weather from './screens/Weather'
+import HomeScreen from './screens/HomeScreen'
 
 import { StyleSheet } from 'react-native';
 

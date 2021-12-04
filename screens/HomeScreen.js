@@ -23,14 +23,17 @@ const HomeScreen = ({ navigation }) => {
                 placeholder="Enter password"></TextInput>
             </View>
 
-            <TouchableOpacity
-            style={styles.loginButton}
-            onPress={() =>
-                navigation.navigate('Weather')
-            }
-          >
-            <Text style={styles.loginText}>Login</Text>
-          </TouchableOpacity>
+            <View>
+              <TouchableOpacity
+                style={styles.loginButton}
+                onPress={() =>
+                    navigation.navigate('Weather')
+                }
+              >
+              <Text style={styles.loginText}>Login</Text>
+            </TouchableOpacity>
+            </View>
+
         </View>
     );
 }
@@ -38,14 +41,14 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: 'white',
+      backgroundColor: '#F8F8F8',
       padding: 10,
       flexDirection: "column",
     },
     credentialsStyle: {
       width: "100%",
       padding: 30,
-      paddingBottom: 10,
+      paddingBottom: 20,
       paddingVertical: 5,
       alignSelf: "flex-start",
     },
@@ -71,13 +74,19 @@ const styles = StyleSheet.create({
     loginButton: {
       backgroundColor: '#161853',
       padding: 10,
-      paddingTop: 20,
+      paddingTop: 10,
       borderRadius: 20,
       
     },
     loginText: {
       textAlign:'center',
       color: 'white',
+    },
+    loginView: {
+      width: "100%",
+      height: "100%",
+      paddingTop: 50,
+      alignSelf: "center",
     }
 });
 
