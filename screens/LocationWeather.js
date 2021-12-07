@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { TextInput, StyleSheet, View, Text, Image } from 'react-native';
+import { TouchableHighlight, Button, TextInput, StyleSheet, View, Text, Image } from 'react-native';
+
+import { PermissionsAndroid } from 'react-native';
+
+import DeviceInfo from 'react-native-device-info';
 
 import { 
   HOST_LOC, 
   KEY_LOC,
   HOST_WEATHER,
   KEY_WEATHER,
+  IP,
+  LOCAL_PORT
 } from "@env";
 
 const LocationWeather = () => {
 
   const [location, setLocation] = React.useState('');
+
+  const [coords, setCoords] = useState({
+    deviceId: 0,
+  });
 
   const [weatherDetails, setWeatherDetails] = useState({
     weatherStatus: "",
@@ -62,6 +72,52 @@ const LocationWeather = () => {
       return response;
   };
 
+  const getdeviceId = () => {
+    var uniqueId = DeviceInfo.getUniqueId();
+    setCoords({
+      ...coords,
+      deviceId: uniqueId
+    });
+  };
+
+  const requestDeviceCoords = async () => {
+    if (Platform.OS === 'ios') {
+      getdeviceId();
+    } else {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Access Required',
+            message: 'This App needs to Access your location',
+          },
+        );
+        const idGranted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE,
+          {
+            title: 'State Access Required',
+            message: 'This App needs to Access your state',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED && idGranted === PermissionsAndroid.RESULTS.GRANTED) {
+          //To Check, If Permission is granted
+          getdeviceId();
+        } else {
+          setCoords({
+            ...coords,
+            locationStatus: 'Permission Denied',
+          });
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+  };
+
+  useEffect(() => {
+    
+  }, []);
+
   const saveLocation = async () => {
     const data = await getLocationWeather();
 
@@ -82,20 +138,50 @@ const LocationWeather = () => {
     });
   };
 
-  useEffect(() => {
-  }, []);
+  const addToFavorites = async () => {
+    requestDeviceCoords();
+
+    const details = JSON.stringify(weatherDetails);
+
+    fetch(`http://${IP}:${LOCAL_PORT}/favorites/`, {
+              method: 'POST',
+              body: JSON.stringify({
+                terminalId: coords.deviceId,
+                details: details
+              }),
+              headers: new Headers({
+                'Content-Type' : 'application/json',
+                'token': 'token'
+              })
+            }).then(res => res.json())
+            .catch(error=> console.error('Error:', error))
+            .then(response => console.log('Success:', response));
+  };
 
   return (
     <View style={styles.appStyle}>
       
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.txtInStyle}
-          onChangeText={text => setLocation(text)}
-          onSubmitEditing={() => saveLocation()}
-          value={location}
-          placeholder="City,Country"
-        />
+      <View style={styles.firstView}>
+        
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.txtInStyle}
+            onChangeText={text => setLocation(text)}
+            onSubmitEditing={() => saveLocation()}
+            value={location}
+            placeholder="City,Country"
+          />
+        </View>
+
+        <View style={styles.buttonView}>
+          <TouchableHighlight
+            style={styles.submit}
+            onPress={() => addToFavorites()}
+            underlayColor='#fff'>
+            <Text style={styles.favIn}>Favorites</Text>
+          </TouchableHighlight>
+        </View>
+
       </View>
 
       <View style={styles.topLocView}>
@@ -157,8 +243,36 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
   },
+  firstView: {
+    flexDirection: 'row'
+  },
+  submit: {
+    backgroundColor: '#4361ee',
+    textAlign: 'center',
+    borderRadius: 50,
+    paddingLeft: 10,
+    paddingRight: 10,
+    justifyContent: 'center'
+  },
+  favIn:{
+    backgroundColor: '#4361ee',
+    textAlign: 'center',
+    borderRadius: 50,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 7,
+    paddingBottom: 7,
+    justifyContent: 'center',
+    color: 'white'
+  },
+  buttonView: {
+    paddingTop: 20,
+    paddingLeft: 10
+  },
   inputView: {
     paddingTop: 10,
+    paddingLeft: 10,
+    alignItems: 'center'
   },
   txtInStyle: {
     borderColor: 'gray', 
