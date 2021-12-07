@@ -11,18 +11,19 @@ import {
 const LocationWeather = () => {
 
   const [location, setLocation] = React.useState('');
-  const [longitude,setlongitude] = useState('...');
-  const [latitude,setlatitude] = useState('...');
-  const [weatherStatus,setWeatherStatus] = useState('...');
-  const [temp,setTemp] = useState('...');
-  const [windSpeed,setWindSpeed] = useState('...');
-  const [precipitation,setPrecipitaion] = useState('...');
-  const [clouds,setClouds] = useState('...');
-  const [sunrise,setSunrise] = useState('...');
-  const [sunset,setSunset] = useState('...');
-  const [uvIndex,setUVIndex] = useState('...');
-  const [weatherImg,setWeatherImg] = useState('...');
-  const [cityName,setCityName] = useState('...');
+
+  const [weatherDetails, setWeatherDetails] = useState({
+    weatherStatus: "",
+    temp: 0,
+    windSpeed: 0,
+    precipitation: 0,
+    clouds: 0,
+    sunrise: "",
+    sunset: "",
+    uvIndex: 0,
+    weatherImg: "",
+    cityName: ""
+  });
   
 
   const getLocationWeather = async () => {
@@ -63,30 +64,25 @@ const LocationWeather = () => {
 
   const saveLocation = async () => {
     const data = await getLocationWeather();
-    setTemp(data.response[0].periods[0].tempC);
-    setWeatherStatus(data.response[0].periods[0].weather)
-    setlongitude(data.response[0].loc.long);
-    setlatitude(data.response[0].loc.lat);
-
-    console.log(latitude);
-    console.log(longitude);
 
     const weather = await getSearchedLocWeather(data.response[0].loc.lat, data.response[0].loc.long);
     console.log(weather);
-    setWeatherStatus(weather.data[0].weather.description);
-    setTemp(weather.data[0].temp);
-    setWindSpeed(weather.data[0].wind_spd);
-    setClouds(weather.data[0].clouds);
-    setPrecipitaion(weather.data[0].precip);
-    setSunrise(weather.data[0].sunrise);
-    setSunset(weather.data[0].sunset);
-    setUVIndex(weather.data[0].uv);
-    setCityName(weather.data[0].city_name);
-    setWeatherImg(`https://www.weatherbit.io/static/img/icons/${weather.data[0].weather.icon}.png`)
+    setWeatherDetails({
+      ...weatherDetails,
+      weatherStatus: weather.data[0].weather.description,
+      temp: weather.data[0].temp,
+      windSpeed: weather.data[0].wind_spd,
+      clouds:weather.data[0].clouds,
+      precipitation:weather.data[0].precip,
+      sunrise:weather.data[0].sunrise,
+      sunset:weather.data[0].sunset,
+      uvIndex:weather.data[0].uv,
+      cityName:weather.data[0].city_name,
+      weatherImg:`https://www.weatherbit.io/static/img/icons/${weather.data[0].weather.icon}.png`
+    });
   };
 
   useEffect(() => {
-    //setLocation(location);
   }, []);
 
   return (
@@ -105,16 +101,16 @@ const LocationWeather = () => {
       <View style={styles.topLocView}>
         
         <View style={styles.weatherView}>
-          <Text style={styles.cityNameText}>{ cityName }</Text>
-          <Text style={styles.tempText}>{ temp }°C</Text>
+          <Text style={styles.cityNameText}>{ weatherDetails.cityName }</Text>
+          <Text style={styles.tempText}>{ weatherDetails.temp }°C</Text>
           <View style={styles.weathStat}>
-            <Text style={styles.weathStatText}>{ weatherStatus }</Text>
+            <Text style={styles.weathStatText}>{ weatherDetails.weatherStatus }</Text>
           </View>
         </View>
 
         <Image
           style={styles.imgWeather}
-          source={{ uri: weatherImg }}
+          source={{ uri: weatherDetails.weatherImg }}
         ></Image>
       </View>
       <View style={styles.statsView}>
@@ -122,30 +118,30 @@ const LocationWeather = () => {
           style={styles.statsImg}
           source={require("../images/wind_speed.png")}
         />
-        <Text style={styles.statsText}>{ windSpeed } km/h</Text>
+        <Text style={styles.statsText}>{ weatherDetails.windSpeed } km/h</Text>
         <Image
         style={styles.statsImg}
           source={require("../images/clouds.png")}
         />
-        <Text style={styles.statsText}>{ clouds }%</Text>
+        <Text style={styles.statsText}>{ weatherDetails.clouds }%</Text>
         <Image
         style={styles.statsImg}
           source={require("../images/precipitation.png")}
         />
-        <Text style={styles.statsText}>{ precipitation }%</Text>
+        <Text style={styles.statsText}>{ weatherDetails.precipitation }%</Text>
       </View>
       <View style={styles.extraBottomView}>
       <View style={styles.bottomStatsView}>
           <Text style={styles.bottomTextL}>UV Index</Text>
-          <Text style={styles.bottomTextR}>{ uvIndex }</Text>
+          <Text style={styles.bottomTextR}>{ weatherDetails.uvIndex }</Text>
         </View>
         <View style={styles.bottomStatsView}>
           <Text style={styles.bottomTextL}>Sunrise</Text>
-          <Text style={styles.bottomTextR}>{ sunrise }</Text>
+          <Text style={styles.bottomTextR}>{ weatherDetails.sunrise }</Text>
         </View>
         <View style={styles.bottomStatsView}>
           <Text style={styles.bottomTextL}>Sunset</Text>
-          <Text style={styles.bottomTextR}>{ sunset }</Text>
+          <Text style={styles.bottomTextR}>{ weatherDetails.sunset }</Text>
         </View>
        
       </View>
