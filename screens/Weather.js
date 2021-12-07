@@ -252,7 +252,7 @@ const Weather = ({ navigation }) => {
             <TouchableOpacity
                 style={styles.searchLocButton}
                 onPress={() =>
-                    navigation.navigate('LocationWeather')
+                    navigation.navigate('Favorites')
                 }
               >
               <Text style={styles.searchLocText}>Favorite Locations</Text>

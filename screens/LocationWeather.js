@@ -153,9 +153,9 @@ const LocationWeather = () => {
                 'Content-Type' : 'application/json',
                 'token': 'token'
               })
-            }).then(res => res.json())
-            .catch(error=> console.error('Error:', error))
-            .then(response => console.log('Success:', response));
+    }).then(res => res.json())
+    .catch(error=> console.error('Error:', error))
+    .then(response => console.log('Success:', response));
   };
 
   return (
@@ -244,7 +244,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   firstView: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    width: '100%'
   },
   submit: {
     backgroundColor: '#4361ee',

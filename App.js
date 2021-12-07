@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Weather from './screens/Weather'
 import HomeScreen from './screens/HomeScreen'
 import LocationWeather from './screens/LocationWeather';
+import Favorites from './screens/Favorites';
 
 import { StyleSheet } from 'react-native';
 
@@ -14,7 +15,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="HomeScreen"
+        initialRouteName="Favorites"
         screenOptions={{
           headerShown: false
         }}
@@ -30,6 +31,10 @@ const App = () => {
         <Stack.Screen
           name="LocationWeather"
           component={LocationWeather}
+        />
+        <Stack.Screen
+          name="Favorites"
+          component={Favorites}
         />
       </Stack.Navigator>
     </NavigationContainer>
