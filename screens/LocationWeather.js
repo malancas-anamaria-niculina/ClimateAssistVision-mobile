@@ -147,7 +147,11 @@ const LocationWeather = () => {
               method: 'POST',
               body: JSON.stringify({
                 terminalId: coords.deviceId,
-                details: details
+                temperature: weatherDetails.temp,
+                city: weatherDetails.cityName,
+                windSpeed: weatherDetails.windSpeed,
+                precipitation: weatherDetails.precipitation,
+                clouds: weatherDetails.clouds
               }),
               headers: new Headers({
                 'Content-Type' : 'application/json',

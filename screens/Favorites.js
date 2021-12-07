@@ -1,26 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { View, StyleSheet, Text, Image, SafeAreaView, FlatList, ScrollView, Pressable } from 'react-native';
 
-const data2 = [{id: 1, title: "title1"},
-        {id:2, title: "title2"},
-        {id:3, title: "title2"},
-        {id:4, title: "title2"},
-        {id:5, title: "title2"},
-        {id:6, title: "title2"}];
+import {
+    IP,
+    LOCAL_PORT
+} from "@env";
 
 const Favorites = () => {
-    const [data, setData] = React.useState(2);
-    
-    
+    const [data, setData] = useState([]);
 
-    renderItemComponent = (item) => 
-            <ScrollView style={styles.weatherBox}>
-                <View style={styles.alignStyle}>
+    useEffect(() => {
+        (() => {
+            fetch(`http://${IP}:${LOCAL_PORT}/favorites/`, {
+                method: 'GET',
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                    'token': 'token'
+                })
+            }).then(res => res.json())
+                .then(response => { console.log('Success:', response); setData(response) })
+                .catch(error => console.error('Error:', error));
+
+        })();
+    }, []);
+
+    renderItemComponent = (item) =>
+        <ScrollView style={styles.weatherBox}>
+            <View style={styles.alignStyle}>
                 <View style={styles.upView}>
                     <View style={styles.textStyle}>
-                        <Text style={styles.degreeText}>20°C</Text>
-                        <Text style={styles.text}>Austin{item.title}</Text>
+                        <Text style={styles.degreeText}>{item.temperature}°C</Text>
+                        <Text style={styles.text}>{item.city}</Text>
                         <Text style={styles.text}>{item.title}</Text>
                     </View>
                     <Image
@@ -45,19 +56,18 @@ const Favorites = () => {
                     />
                     <Text style={styles.statsText}> %</Text>
                 </View>
-                </View>
-                
-            </ScrollView>
+            </View>
+
+        </ScrollView>
 
     return (
         <View style={styles.appView}>
-            <FlatList style={styles.compView}
-                data={data2}
-
+            { !!data.length && <FlatList style={styles.compView}
+                data={data}
                 contentContainerStyle={{ flexGrow: 1 }}
                 keyExtractor={(item) => item.id}
-                renderItem={({item}) => renderItemComponent(item)}
-            />
+                renderItem={({ item }) => renderItemComponent(item)}
+            /> }
         </View>
     );
 }
@@ -85,11 +95,11 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
         paddingRight: 10,
         paddingLeft: 10,
-        borderColor: 'gray', 
+        borderColor: 'gray',
         borderRadius: 20,
         width: '100%',
-        borderBottomWidth:1,
-        borderTopWidth:1,
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
     },
     upView: {
         flexDirection: 'row',
@@ -112,7 +122,7 @@ const styles = StyleSheet.create({
         padding: 5,
         paddingRight: 10,
         paddingLeft: 10,
-        paddingTop:100,
+        paddingTop: 100,
         width: '30%',
         height: '30%',
     },

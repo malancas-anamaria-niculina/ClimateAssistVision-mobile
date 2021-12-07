@@ -15,7 +15,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Favorites"
+        initialRouteName="HomeScreen"
         screenOptions={{
           headerShown: false
         }}
