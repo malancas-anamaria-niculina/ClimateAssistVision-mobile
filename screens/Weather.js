@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { TouchableOpacity, StyleSheet, View, Text, Image } from 'react-native';
 
 import { PermissionsAndroid } from 'react-native';
 
@@ -13,7 +13,7 @@ import {
   KEY_WEATHER,
 } from "@env";
 
-const Weather = () => {
+const Weather = ({ navigation }) => {
 
   const [deviceId, setDeviceId] =
     useState('...');
@@ -64,6 +64,10 @@ const Weather = () => {
   const [
     uvIndex,
     setUVIndex
+  ] = useState('...');
+  const [
+    weatherImg,
+    setWeatherImg
   ] = useState('...');
 
   useEffect(() => {
@@ -178,6 +182,7 @@ const Weather = () => {
         setSunset(weather.data[0].sunset);
         setUVIndex(weather.data[0].uv);
         //setWeatherImg(weather.data[0].weather.icon);
+        setWeatherImg(`https://www.weatherbit.io/static/img/icons/${weather.data[0].weather.icon}.png`)
       },
       (error) => {
         setLocationStatus(error.message);
@@ -241,7 +246,7 @@ const Weather = () => {
       <Text style={styles.text}>{ deviceLocation }</Text>
         <Image
           style={styles.imgWeather}
-          source={require('../images/t01d.png')}
+          source={{ uri: weatherImg }}
         ></Image>
       
       <View style={styles.weathStat}>
@@ -279,6 +284,24 @@ const Weather = () => {
           <Text style={styles.bottomTextL}>Sunset</Text>
           <Text style={styles.bottomTextR}>{ sunset }</Text>
         </View>
+        <View style={styles.bottomView}>
+              <TouchableOpacity
+                style={styles.searchLocButton}
+                onPress={() =>
+                    navigation.navigate('LocationWeather')
+                }
+              >
+              <Text style={styles.searchLocText}>Search Location</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.searchLocButton}
+                onPress={() =>
+                    navigation.navigate('LocationWeather')
+                }
+              >
+              <Text style={styles.searchLocText}>Favorite Locations</Text>
+            </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -293,10 +316,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   topLocView: {
-    flex: 0.06,
+    flex: 0.1,
     flexDirection: 'row',
     width: '100%',
-    height: '50%',
+    height: '100%',
+    paddingBottom: 5,
     paddingTop: 20,
     justifyContent: 'center',
   },
@@ -382,6 +406,23 @@ const styles = StyleSheet.create({
   extraBottomView: {
     paddingTop: 20,
     paddingBottom: 20,
+  },
+  searchLocButton: {
+    backgroundColor: '#161853',
+    borderRadius: 20,
+  },
+  searchLocText: {
+    color: "white",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 5,
+    paddingTop: 5,
+  },
+  bottomView: {
+    paddingTop: 40,
+    alignContent: 'space-between',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   }
 });
 

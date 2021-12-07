@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Weather from './screens/Weather'
 import HomeScreen from './screens/HomeScreen'
+import LocationWeather from './screens/LocationWeather';
 
 import { StyleSheet } from 'react-native';
 
@@ -25,6 +26,10 @@ const App = () => {
         <Stack.Screen
           name="Weather"
           component={Weather}
+        />
+        <Stack.Screen
+          name="LocationWeather"
+          component={LocationWeather}
         />
       </Stack.Navigator>
     </NavigationContainer>
