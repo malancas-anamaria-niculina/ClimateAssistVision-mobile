@@ -6,8 +6,8 @@ import { PermissionsAndroid } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import Geolocation from '@react-native-community/geolocation';
 
-import { 
-  HOST_LOCATION, 
+import {
+  HOST_LOCATION,
   KEY_LOCATION,
   HOST_WEATHER,
   KEY_WEATHER,
@@ -93,7 +93,7 @@ const Weather = ({ navigation }) => {
         console.error(err);
       }));
 
-      return response;
+    return response;
   };
 
   const getLocationWeather = async (lat, lon) => {
@@ -111,7 +111,7 @@ const Weather = ({ navigation }) => {
         console.error(err);
       }));
 
-      return response;
+    return response;
   };
 
   const getOneTimeLocation = async () => {
@@ -139,13 +139,13 @@ const Weather = ({ navigation }) => {
           weatherStatus: weather.data[0].weather.description,
           temp: weather.data[0].temp,
           windSpeed: weather.data[0].wind_spd,
-          clouds:weather.data[0].clouds,
-          precipitation:weather.data[0].precip,
-          sunrise:weather.data[0].sunrise,
-          sunset:weather.data[0].sunset,
-          uvIndex:weather.data[0].uv,
-          cityName:weather.data[0].city_name,
-          weatherImg:`https://www.weatherbit.io/static/img/icons/${weather.data[0].weather.icon}.png`,
+          clouds: weather.data[0].clouds,
+          precipitation: weather.data[0].precip,
+          sunrise: weather.data[0].sunrise,
+          sunset: weather.data[0].sunset,
+          uvIndex: weather.data[0].uv,
+          cityName: weather.data[0].city_name,
+          weatherImg: `https://www.weatherbit.io/static/img/icons/${weather.data[0].weather.icon}.png`,
           deviceLocation: loc
         });
       },
@@ -164,12 +164,12 @@ const Weather = ({ navigation }) => {
     getdeviceId();
     watchID = Geolocation.watchPosition(
       (position) => {
-          setCoords({
-            ...coords,
-            locationStatus: 'Device details',
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          });
+        setCoords({
+          ...coords,
+          locationStatus: 'Device details',
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        });
 
       },
       (error) => {
@@ -192,73 +192,80 @@ const Weather = ({ navigation }) => {
 
   return (
     <View style={styles.appStyle}>
-      <View style={styles.topLocView}>
-        <Image
-          style={styles.locationImg}
-          source={require('../images/location-cursor.png')}
-        />
-        <Text style={styles.locTextUp}>Your Location Now</Text>
-      </View>
-      <Text style={styles.text}>{ weatherDetails.deviceLocation }</Text>
+      {!!!coords.locationStatus && <Image style={styles.gifImage}
+        source={require('../images/loading.jpg')}
+        style={{ width: 100, height: 100 }}
+      />
+      }
+      {!!weatherDetails.weatherStatus && <View style={styles.appStyle}>
+        <View style={styles.topLocView}>
+          <Image
+            style={styles.locationImg}
+            source={require('../images/location-cursor.png')}
+          />
+          <Text style={styles.locTextUp}>Your Location Now</Text>
+        </View>
+        <Text style={styles.text}>{weatherDetails.deviceLocation}</Text>
         <Image
           style={styles.imgWeather}
           source={{ uri: weatherDetails.weatherImg }}
         ></Image>
-      
-      <View style={styles.weathStat}>
-        <Text style={styles.weathStatText}>{ weatherDetails.weatherStatus }</Text>
-      </View>
-      
-      <Text style={styles.tempText}>{ weatherDetails.temp } °C</Text>
-      <View style={styles.statsView}>
-        <Image
-          style={styles.statsImg}
-          source={require("../images/wind_speed.png")}
-        />
-        <Text style={styles.statsText}>{ weatherDetails.windSpeed } km/h</Text>
-        <Image
-        style={styles.statsImg}
-          source={require("../images/clouds.png")}
-        />
-        <Text style={styles.statsText}>{ weatherDetails.clouds }%</Text>
-        <Image
-        style={styles.statsImg}
-          source={require("../images/precipitation.png")}
-        />
-        <Text style={styles.statsText}>{ weatherDetails.precipitation }%</Text>
-      </View>
-      <View style={styles.extraBottomView}>
-      <View style={styles.bottomStatsView}>
-          <Text style={styles.bottomTextL}>UV Index</Text>
-          <Text style={styles.bottomTextR}>{ weatherDetails.uvIndex }</Text>
+
+        <View style={styles.weathStat}>
+          <Text style={styles.weathStatText}>{weatherDetails.weatherStatus}</Text>
         </View>
-        <View style={styles.bottomStatsView}>
-          <Text style={styles.bottomTextL}>Sunrise</Text>
-          <Text style={styles.bottomTextR}>{ weatherDetails.sunrise }</Text>
+
+        <Text style={styles.tempText}>{weatherDetails.temp} °C</Text>
+        <View style={styles.statsView}>
+          <Image
+            style={styles.statsImg}
+            source={require("../images/wind_speed.png")}
+          />
+          <Text style={styles.statsText}>{weatherDetails.windSpeed} km/h</Text>
+          <Image
+            style={styles.statsImg}
+            source={require("../images/clouds.png")}
+          />
+          <Text style={styles.statsText}>{weatherDetails.clouds}%</Text>
+          <Image
+            style={styles.statsImg}
+            source={require("../images/precipitation.png")}
+          />
+          <Text style={styles.statsText}>{weatherDetails.precipitation}%</Text>
         </View>
-        <View style={styles.bottomStatsView}>
-          <Text style={styles.bottomTextL}>Sunset</Text>
-          <Text style={styles.bottomTextR}>{ weatherDetails.sunset }</Text>
-        </View>
-        <View style={styles.bottomView}>
-              <TouchableOpacity
-                style={styles.searchLocButton}
-                onPress={() =>
-                    navigation.navigate('LocationWeather')
-                }
-              >
+        <View style={styles.extraBottomView}>
+          <View style={styles.bottomStatsView}>
+            <Text style={styles.bottomTextL}>UV Index</Text>
+            <Text style={styles.bottomTextR}>{weatherDetails.uvIndex}</Text>
+          </View>
+          <View style={styles.bottomStatsView}>
+            <Text style={styles.bottomTextL}>Sunrise</Text>
+            <Text style={styles.bottomTextR}>{weatherDetails.sunrise}</Text>
+          </View>
+          <View style={styles.bottomStatsView}>
+            <Text style={styles.bottomTextL}>Sunset</Text>
+            <Text style={styles.bottomTextR}>{weatherDetails.sunset}</Text>
+          </View>
+          <View style={styles.bottomView}>
+            <TouchableOpacity
+              style={styles.searchLocButton}
+              onPress={() =>
+                navigation.navigate('LocationWeather')
+              }
+            >
               <Text style={styles.searchLocText}>Search Location</Text>
             </TouchableOpacity>
             <TouchableOpacity
-                style={styles.searchLocButton}
-                onPress={() =>
-                    navigation.navigate('Favorites')
-                }
-              >
+              style={styles.searchLocButton}
+              onPress={() =>
+                navigation.navigate('Favorites')
+              }
+            >
               <Text style={styles.searchLocText}>Favorite Locations</Text>
             </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </View>}
     </View>
   );
 }
@@ -270,6 +277,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'center',
+  },
+  gifImage: {
+    width: '90%'
   },
   topLocView: {
     flex: 0.1,
@@ -309,7 +319,7 @@ const styles = StyleSheet.create({
     color: '#161853',
     fontSize: 30,
   },
-  weathStat:{
+  weathStat: {
     backgroundColor: '#EAEAEA',
     borderRadius: 20,
     justifyContent: 'center',

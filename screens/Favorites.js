@@ -32,11 +32,11 @@ const Favorites = () => {
                     <View style={styles.textStyle}>
                         <Text style={styles.degreeText}>{item.temperature}°C</Text>
                         <Text style={styles.text}>{item.city}</Text>
-                        <Text style={styles.text}>{item.title}</Text>
+                        <Text style={styles.text}>{item.country}</Text>
                     </View>
                     <Image
                         style={styles.imgStyle}
-                        source={require("../images/wind_speed.png")}
+                        source={{ uri: item.imageUrl }}
                     />
                 </View>
                 <View style={styles.statsView}>
@@ -44,17 +44,17 @@ const Favorites = () => {
                         style={styles.statsImg}
                         source={require("../images/wind_speed.png")}
                     />
-                    <Text style={styles.statsText}> km/h</Text>
+                    <Text style={styles.statsText}> {item.windSpeed} km/h        </Text>
                     <Image
                         style={styles.statsImg}
                         source={require("../images/clouds.png")}
                     />
-                    <Text style={styles.statsText}> %</Text>
+                    <Text style={styles.statsText}> {item.clouds}%        </Text>
                     <Image
                         style={styles.statsImg}
                         source={require("../images/precipitation.png")}
                     />
-                    <Text style={styles.statsText}> %</Text>
+                    <Text style={styles.statsText}> {item.precipitation}%</Text>
                 </View>
             </View>
 
@@ -62,12 +62,12 @@ const Favorites = () => {
 
     return (
         <View style={styles.appView}>
-            { !!data.length && <FlatList style={styles.compView}
+            {!!data.length && <FlatList style={styles.compView}
                 data={data}
                 contentContainerStyle={{ flexGrow: 1 }}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => renderItemComponent(item)}
-            /> }
+            />}
         </View>
     );
 }

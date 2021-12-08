@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableHighlight, Button, TextInput, StyleSheet, View, Text, Image } from 'react-native';
+import { TouchableHighlight, Button, TextInput, StyleSheet, View, Text, Image, FlatList } from 'react-native';
 
 import { PermissionsAndroid } from 'react-native';
 
 import DeviceInfo from 'react-native-device-info';
 
-import { 
-  HOST_LOC, 
+import {
+  HOST_LOC,
   KEY_LOC,
   HOST_WEATHER,
   KEY_WEATHER,
@@ -22,6 +22,8 @@ const LocationWeather = () => {
     deviceId: 0,
   });
 
+  const [forecast, setForecast] = useState([]);
+
   const [weatherDetails, setWeatherDetails] = useState({
     weatherStatus: "",
     temp: 0,
@@ -34,7 +36,7 @@ const LocationWeather = () => {
     weatherImg: "",
     cityName: ""
   });
-  
+
 
   const getLocationWeather = async () => {
     const URL = `https://aerisweather1.p.rapidapi.com/forecasts/${location}`;
@@ -46,12 +48,12 @@ const LocationWeather = () => {
         "x-rapidapi-key": KEY_LOC
       }
     })
-      .then(async (response) =>  response.json())
+      .then(async (response) => response.json())
       .catch(err => {
         console.error(err);
       }));
 
-      return response;
+    return response;
   };
 
   const getSearchedLocWeather = async (lat, lon) => {
@@ -69,7 +71,7 @@ const LocationWeather = () => {
         console.error(err);
       }));
 
-      return response;
+    return response;
   };
 
   const getdeviceId = () => {
@@ -115,11 +117,13 @@ const LocationWeather = () => {
   };
 
   useEffect(() => {
-    
+
   }, []);
 
   const saveLocation = async () => {
     const data = await getLocationWeather();
+
+    setForecast(data.response[0].periods);
 
     const weather = await getSearchedLocWeather(data.response[0].loc.lat, data.response[0].loc.long);
     console.log(weather);
@@ -128,45 +132,67 @@ const LocationWeather = () => {
       weatherStatus: weather.data[0].weather.description,
       temp: weather.data[0].temp,
       windSpeed: weather.data[0].wind_spd,
-      clouds:weather.data[0].clouds,
-      precipitation:weather.data[0].precip,
-      sunrise:weather.data[0].sunrise,
-      sunset:weather.data[0].sunset,
-      uvIndex:weather.data[0].uv,
-      cityName:weather.data[0].city_name,
-      weatherImg:`https://www.weatherbit.io/static/img/icons/${weather.data[0].weather.icon}.png`
+      clouds: weather.data[0].clouds,
+      precipitation: weather.data[0].precip,
+      sunrise: weather.data[0].sunrise,
+      sunset: weather.data[0].sunset,
+      uvIndex: weather.data[0].uv,
+      cityName: weather.data[0].city_name,
+      weatherImg: `https://www.weatherbit.io/static/img/icons/${weather.data[0].weather.icon}.png`
     });
   };
 
   const addToFavorites = async () => {
-    requestDeviceCoords();
+    if (!!weatherDetails.weatherStatus) {
+      requestDeviceCoords();
 
-    const details = JSON.stringify(weatherDetails);
+      const details = JSON.stringify(weatherDetails);
 
-    fetch(`http://${IP}:${LOCAL_PORT}/favorites/`, {
-              method: 'POST',
-              body: JSON.stringify({
-                terminalId: coords.deviceId,
-                temperature: weatherDetails.temp,
-                city: weatherDetails.cityName,
-                windSpeed: weatherDetails.windSpeed,
-                precipitation: weatherDetails.precipitation,
-                clouds: weatherDetails.clouds
-              }),
-              headers: new Headers({
-                'Content-Type' : 'application/json',
-                'token': 'token'
-              })
-    }).then(res => res.json())
-    .catch(error=> console.error('Error:', error))
-    .then(response => console.log('Success:', response));
+      fetch(`http://${IP}:${LOCAL_PORT}/favorites/`, {
+        method: 'POST',
+        body: JSON.stringify({
+          terminalId: coords.deviceId,
+          temperature: weatherDetails.temp,
+          city: weatherDetails.cityName,
+          windSpeed: weatherDetails.windSpeed,
+          precipitation: weatherDetails.precipitation,
+          clouds: weatherDetails.clouds,
+          imageUrl: weatherDetails.weatherImg
+        }),
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          'token': 'token'
+        })
+      }).then(res => res.json())
+        .catch(error => console.error('Error:', error))
+        .then(response => console.log('Success:', response));
+    }
   };
+
+  const getDay = (validTime) => {
+    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    let date = new Date(validTime);
+    return days[date.getDay()];
+  };
+
+  let renderItemComponent = (item) =>
+    <View style={styles.bottomStatsView}>
+      <Text style={styles.bottomTextL}>{getDay(item.validTime)}</Text>
+      <View style={styles.forecastImg}>
+        <Image
+          style={styles.statsImg}
+          source={{ uri: `https://www.aerisweather.com/img/wxicons/${item.icon}` }}
+        />
+      </View>
+      <Text style={styles.bottomTextR}>{item.maxTempC}°   </Text>
+      <Text style={styles.degreeTextL}>{item.minTempC}°</Text>
+    </View>
 
   return (
     <View style={styles.appStyle}>
-      
+
       <View style={styles.firstView}>
-        
+
         <View style={styles.inputView}>
           <TextInput
             style={styles.txtInStyle}
@@ -188,53 +214,49 @@ const LocationWeather = () => {
 
       </View>
 
-      <View style={styles.topLocView}>
-        
-        <View style={styles.weatherView}>
-          <Text style={styles.cityNameText}>{ weatherDetails.cityName }</Text>
-          <Text style={styles.tempText}>{ weatherDetails.temp }°C</Text>
-          <View style={styles.weathStat}>
-            <Text style={styles.weathStatText}>{ weatherDetails.weatherStatus }</Text>
+      {!!weatherDetails.weatherStatus && <View style={styles.parentView}>
+        <View style={styles.topLocView}>
+
+          <View style={styles.weatherView}>
+            <Text style={styles.cityNameText}>{weatherDetails.cityName}</Text>
+            <Text style={styles.tempText}>{weatherDetails.temp}°C</Text>
+            <View style={styles.weathStat}>
+              <Text style={styles.weathStatText}>{weatherDetails.weatherStatus}</Text>
+            </View>
           </View>
+
+          <Image
+            style={styles.imgWeather}
+            source={{ uri: weatherDetails.weatherImg }}
+          ></Image>
+        </View>
+        <View style={styles.statsView}>
+          <Image
+            style={styles.statsImg}
+            source={require("../images/wind_speed.png")}
+          />
+          <Text style={styles.statsText}>{weatherDetails.windSpeed} km/h</Text>
+          <Image
+            style={styles.statsImg}
+            source={require("../images/clouds.png")}
+          />
+          <Text style={styles.statsText}>{weatherDetails.clouds}%</Text>
+          <Image
+            style={styles.statsImg}
+            source={require("../images/precipitation.png")}
+          />
+          <Text style={styles.statsText}>{weatherDetails.precipitation}%</Text>
         </View>
 
-        <Image
-          style={styles.imgWeather}
-          source={{ uri: weatherDetails.weatherImg }}
-        ></Image>
-      </View>
-      <View style={styles.statsView}>
-        <Image
-          style={styles.statsImg}
-          source={require("../images/wind_speed.png")}
-        />
-        <Text style={styles.statsText}>{ weatherDetails.windSpeed } km/h</Text>
-        <Image
-        style={styles.statsImg}
-          source={require("../images/clouds.png")}
-        />
-        <Text style={styles.statsText}>{ weatherDetails.clouds }%</Text>
-        <Image
-        style={styles.statsImg}
-          source={require("../images/precipitation.png")}
-        />
-        <Text style={styles.statsText}>{ weatherDetails.precipitation }%</Text>
-      </View>
-      <View style={styles.extraBottomView}>
-      <View style={styles.bottomStatsView}>
-          <Text style={styles.bottomTextL}>UV Index</Text>
-          <Text style={styles.bottomTextR}>{ weatherDetails.uvIndex }</Text>
+        <View>
+          {!!forecast.length && <FlatList
+            data={forecast}
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => renderItemComponent(item)}
+          />}
         </View>
-        <View style={styles.bottomStatsView}>
-          <Text style={styles.bottomTextL}>Sunrise</Text>
-          <Text style={styles.bottomTextR}>{ weatherDetails.sunrise }</Text>
-        </View>
-        <View style={styles.bottomStatsView}>
-          <Text style={styles.bottomTextL}>Sunset</Text>
-          <Text style={styles.bottomTextR}>{ weatherDetails.sunset }</Text>
-        </View>
-       
-      </View>
+      </View>}
     </View>
   );
 }
@@ -245,6 +267,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     width: '100%',
     height: '100%',
+    alignItems: 'center',
+    paddingTop: 20
+  },
+  parentView: {
     alignItems: 'center',
   },
   firstView: {
@@ -259,7 +285,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     justifyContent: 'center'
   },
-  favIn:{
+  favIn: {
     backgroundColor: '#4361ee',
     textAlign: 'center',
     borderRadius: 50,
@@ -280,12 +306,12 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   txtInStyle: {
-    borderColor: 'gray', 
+    borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 20,
     placeholderTextColor: 'gray',
-    paddingLeft: 80,
-    paddingRight: 80,
+    paddingLeft: 60,
+    paddingRight: 60,
   },
   cityNameText: {
     color: '#161853',
@@ -316,7 +342,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   text: {
-    alignContent:'center',
+    alignContent: 'center',
     color: '#161853',
     paddingTop: 8,
     paddingBottom: 25,
@@ -332,7 +358,7 @@ const styles = StyleSheet.create({
     color: '#161853',
     fontSize: 30,
   },
-  weathStat:{
+  weathStat: {
     backgroundColor: '#EAEAEA',
     borderRadius: 20,
     justifyContent: 'center',
@@ -351,6 +377,7 @@ const styles = StyleSheet.create({
   },
   statsView: {
     flexDirection: 'row',
+    paddingBottom: 30,
   },
   statsImg: {
     padding: 5,
@@ -366,19 +393,23 @@ const styles = StyleSheet.create({
   },
   bottomStatsView: {
     paddingTop: 5,
-    paddingBottom: 5,
+    paddingBottom: 10,
     flexDirection: "row",
     alignContent: 'space-between',
     justifyContent: 'space-between'
   },
   bottomTextL: {
-    paddingLeft: 10,
-    paddingRight: 100,
+    paddingRight: 10,
     color: '#161853',
     fontSize: 15,
   },
+  degreeTextL: {
+    paddingRight: 10,
+    fontSize: 15,
+  },
   bottomTextR: {
-    paddingLeft: 100,
+    color: '#161853',
+    paddingLeft: 10,
     paddingRight: 10,
     fontSize: 15,
   },
@@ -392,6 +423,12 @@ const styles = StyleSheet.create({
   bottomView: {
     justifyContent: 'center',
     flexDirection: 'row',
+  },
+  forecastImg: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: 40,
+    paddingRight: 40,
   }
 });
 
