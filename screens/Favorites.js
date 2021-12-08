@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import { View, StyleSheet, Text, Image, SafeAreaView, FlatList, ScrollView, Pressable } from 'react-native';
 
+import DeviceInfo from 'react-native-device-info';
+
 import {
     IP,
     LOCAL_PORT
@@ -12,7 +14,9 @@ const Favorites = () => {
 
     useEffect(() => {
         (() => {
-            fetch(`http://${IP}:${LOCAL_PORT}/favorites/`, {
+            var uniqueId = DeviceInfo.getUniqueId();
+
+            fetch(`http://${IP}:${LOCAL_PORT}/favorites/get?terminalId=${uniqueId}`, {
                 method: 'GET',
                 headers: new Headers({
                     'Content-Type': 'application/json',

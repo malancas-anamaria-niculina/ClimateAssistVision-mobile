@@ -117,7 +117,7 @@ const LocationWeather = () => {
   };
 
   useEffect(() => {
-
+    requestDeviceCoords();
   }, []);
 
   const saveLocation = async () => {

@@ -193,7 +193,7 @@ const Weather = ({ navigation }) => {
   return (
     <View style={styles.appStyle}>
       {!!!coords.locationStatus && <Image style={styles.gifImage}
-        source={require('../images/loading.jpg')}
+        source={require('../images/loading.png')}
         style={{ width: 100, height: 100 }}
       />
       }
