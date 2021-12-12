@@ -8,6 +8,8 @@ import DeviceInfo from 'react-native-device-info';
 import {
   HOST_LOC,
   KEY_LOC,
+  HOST_LOCATION,
+  KEY_LOCATION,
   HOST_WEATHER,
   KEY_WEATHER,
   IP,
@@ -74,6 +76,24 @@ const LocationWeather = () => {
     return response;
   };
 
+  const getCountry = async (lat, lon) => {
+    const URL = `https://timezone-by-location.p.rapidapi.com/timezone?lat=${lat}&lon=${lon}&c=1&s=0`;
+
+    const response = await Promise.resolve(fetch(URL, {
+      "method": "GET",
+      "headers": {
+        "x-rapidapi-host": HOST_LOCATION,
+        "x-rapidapi-key": KEY_LOCATION
+      }
+    })
+      .then((response) => response.json())
+      .catch(err => {
+        console.error(err);
+      }));
+
+    return response;
+  };
+
   const getdeviceId = () => {
     var uniqueId = DeviceInfo.getUniqueId();
     setCoords({
@@ -125,8 +145,13 @@ const LocationWeather = () => {
 
     setForecast(data.response[0].periods);
 
+    const location = await getCountry(data.response[0].loc.lat, data.response[0].loc.long);
+
+    console.log(data.response[0].loc.lat);
+    console.log(data.response[0].loc.long);
+
     const weather = await getSearchedLocWeather(data.response[0].loc.lat, data.response[0].loc.long);
-    console.log(weather);
+
     setWeatherDetails({
       ...weatherDetails,
       weatherStatus: weather.data[0].weather.description,
@@ -137,7 +162,7 @@ const LocationWeather = () => {
       sunrise: weather.data[0].sunrise,
       sunset: weather.data[0].sunset,
       uvIndex: weather.data[0].uv,
-      cityName: weather.data[0].city_name,
+      cityName: weather.data[0].city_name + ", " + location.Zones[0].CountryName,
       weatherImg: `https://www.weatherbit.io/static/img/icons/${weather.data[0].weather.icon}.png`
     });
   };
@@ -278,7 +303,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   submit: {
-    backgroundColor: '#4361ee',
+    backgroundColor: '#ffe3a6',
     textAlign: 'center',
     borderRadius: 50,
     paddingLeft: 10,
@@ -286,7 +311,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   favIn: {
-    backgroundColor: '#4361ee',
+    backgroundColor: '#ffe3a6',
     textAlign: 'center',
     borderRadius: 50,
     paddingLeft: 10,
@@ -294,7 +319,7 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     paddingBottom: 7,
     justifyContent: 'center',
-    color: 'white'
+    color: '#161853',
   },
   buttonView: {
     paddingTop: 20,

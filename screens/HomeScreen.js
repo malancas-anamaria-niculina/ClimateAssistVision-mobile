@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Button, View, StyleSheet, Text, TextInput } from 'react-native';
+import { TouchableOpacity, View, StyleSheet, Text } from 'react-native';
 
 const HomeScreen = ({ navigation }) => {
   return (
@@ -66,20 +66,8 @@ const styles = StyleSheet.create({
     paddingBottom: 150,
     alignSelf: "flex-start",
   },
-  emailTextStyle: {
-    fontSize: 20,
-    color: 'black',
-    padding: 5,
-    alignSelf: "flex-start",
-  },
-  emailInput: {
-    borderWidth: 0.5,
-    borderColor: "#161853",
-    borderRadius: 20,
-    width: "100%"
-  },
   loginButton: {
-    backgroundColor: '#161853',
+    backgroundColor: '#ffe3a6',
     padding: 10,
     paddingTop: 10,
     borderRadius: 20,
@@ -87,7 +75,7 @@ const styles = StyleSheet.create({
   },
   loginText: {
     textAlign: 'center',
-    color: 'white',
+    color: '#161853',
   },
   loginView: {
     width: "100%",
