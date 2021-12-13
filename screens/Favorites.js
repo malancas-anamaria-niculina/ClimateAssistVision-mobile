@@ -5,8 +5,7 @@ import { View, StyleSheet, Text, Image, SafeAreaView, FlatList, ScrollView, Pres
 import DeviceInfo from 'react-native-device-info';
 
 import {
-    IP,
-    LOCAL_PORT
+    HEROKU_URL
 } from "@env";
 
 const Favorites = () => {
@@ -16,7 +15,7 @@ const Favorites = () => {
         (() => {
             var uniqueId = DeviceInfo.getUniqueId();
 
-            fetch(`http://${IP}:${LOCAL_PORT}/favorites/get?terminalId=${uniqueId}`, {
+            fetch(`https://${HEROKU_URL}/favorites/get?terminalId=${uniqueId}`, {
                 method: 'GET',
                 headers: new Headers({
                     'Content-Type': 'application/json',
@@ -117,10 +116,11 @@ const styles = StyleSheet.create({
 
     },
     text: {
-        color: '#161853',
+        color: 'black',
     },
     degreeText: {
-        fontSize: 35
+        fontSize: 35,
+        color: '#161853'
     },
     imgStyle: {
         padding: 5,
@@ -132,6 +132,9 @@ const styles = StyleSheet.create({
     },
     statsView: {
         flexDirection: 'row',
+    },
+    statsText: {
+        color: '#161853',
     },
     statsImg: {
         padding: 5,

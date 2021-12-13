@@ -302,6 +302,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingStart: 11,
     fontSize: 12,
+    color: '#161853'
   },
   text: {
     color: '#161853',
@@ -350,6 +351,7 @@ const styles = StyleSheet.create({
   statsText: {
     paddingLeft: 10,
     paddingRight: 10,
+    color: '#161853'
   },
   bottomStatsView: {
     paddingTop: 5,
@@ -368,6 +370,7 @@ const styles = StyleSheet.create({
     paddingLeft: 100,
     paddingRight: 10,
     fontSize: 15,
+    color: '#161853',
   },
   extraBottomView: {
     paddingTop: 20,

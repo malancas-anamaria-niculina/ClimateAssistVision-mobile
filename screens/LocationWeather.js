@@ -12,8 +12,7 @@ import {
   KEY_LOCATION,
   HOST_WEATHER,
   KEY_WEATHER,
-  IP,
-  LOCAL_PORT
+  HEROKU_URL
 } from "@env";
 
 const LocationWeather = () => {
@@ -173,7 +172,7 @@ const LocationWeather = () => {
 
       const details = JSON.stringify(weatherDetails);
 
-      fetch(`http://${IP}:${LOCAL_PORT}/favorites/`, {
+      fetch(`http://${HEROKU_URL}/favorites/`, {
         method: 'POST',
         body: JSON.stringify({
           terminalId: coords.deviceId,
@@ -335,11 +334,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
     placeholderTextColor: 'gray',
+    color: '#161853',
     paddingLeft: 60,
     paddingRight: 60,
   },
   cityNameText: {
-    color: '#161853',
+    color: 'black',
     fontSize: 20,
   },
   topLocView: {
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
   },
   text: {
     alignContent: 'center',
-    color: '#161853',
+    color: 'black',
     paddingTop: 8,
     paddingBottom: 25,
     fontSize: 16,
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
     width: '50%',
   },
   weatherText: {
-    color: '#161853',
+    color: 'black',
     fontSize: 30,
   },
   weathStat: {
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
   tempText: {
     paddingTop: 10,
     paddingBottom: 10,
-    color: '#161853',
+    color: 'black',
     fontSize: 80,
   },
   statsView: {
@@ -415,6 +415,7 @@ const styles = StyleSheet.create({
   statsText: {
     paddingLeft: 10,
     paddingRight: 10,
+    color: '#161853'
   },
   bottomStatsView: {
     paddingTop: 5,
@@ -425,7 +426,7 @@ const styles = StyleSheet.create({
   },
   bottomTextL: {
     paddingRight: 10,
-    color: '#161853',
+    color: 'black',
     fontSize: 15,
   },
   degreeTextL: {
@@ -433,7 +434,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   bottomTextR: {
-    color: '#161853',
+    color: 'black',
     paddingLeft: 10,
     paddingRight: 10,
     fontSize: 15,
